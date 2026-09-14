@@ -259,6 +259,7 @@ class Config {
 
     // next project config, which can affect userconfig location
     await this.loadProjectConfig()
+    this.#resolveRelativePaths()
 
     // then user config, which can affect globalconfig location
     await this.loadUserConfig()
@@ -852,6 +853,14 @@ class Config {
 
     if (!this.localPrefix) {
       this.localPrefix = this.cwd
+    }
+  }
+
+  #resolveRelativePaths () {
+    for (const { data } of this.data.values()) {
+      for (const key of Object.keys(data)) {
+        data[key] = this.parseField(data[key], key)
+      }
     }
   }
 
